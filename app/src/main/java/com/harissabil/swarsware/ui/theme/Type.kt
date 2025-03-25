@@ -1,34 +1,45 @@
 package com.harissabil.swarsware.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import com.harissabil.swarsware.R
 
-// Set of Material typography styles to start with
+object AppFont {
+    val poppins = FontFamily(
+        Font(R.font.pregular),
+        Font(R.font.pitalic, style = FontStyle.Italic),
+        Font(R.font.pmedium, FontWeight.Medium),
+        Font(R.font.pmedium_italic, FontWeight.Medium, style = FontStyle.Italic),
+        Font(R.font.psemibold, FontWeight.SemiBold),
+        Font(R.font.psemibold_italic, FontWeight.SemiBold, style = FontStyle.Italic),
+        Font(R.font.psemibold, FontWeight.Bold),
+        Font(R.font.psemibold_italic, FontWeight.Bold, style = FontStyle.Italic),
+        Font(R.font.plight, FontWeight.Light)
+    )
+}
+
+private val defaultTypography = Typography()
 val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
+    displayLarge = defaultTypography.displayLarge.copy(fontFamily = AppFont.poppins),
+    displayMedium = defaultTypography.displayMedium.copy(fontFamily = AppFont.poppins),
+    displaySmall = defaultTypography.displaySmall.copy(fontFamily = AppFont.poppins),
+
+    headlineLarge = defaultTypography.headlineLarge.copy(fontFamily = AppFont.poppins),
+    headlineMedium = defaultTypography.headlineMedium.copy(fontFamily = AppFont.poppins),
+    headlineSmall = defaultTypography.headlineSmall.copy(fontFamily = AppFont.poppins),
+
+    titleLarge = defaultTypography.titleLarge.copy(fontFamily = AppFont.poppins),
+    titleMedium = defaultTypography.titleMedium.copy(fontFamily = AppFont.poppins),
+    titleSmall = defaultTypography.titleSmall.copy(fontFamily = AppFont.poppins),
+
+    bodyLarge = defaultTypography.bodyLarge.copy(fontFamily = AppFont.poppins),
+    bodyMedium = defaultTypography.bodyMedium.copy(fontFamily = AppFont.poppins),
+    bodySmall = defaultTypography.bodySmall.copy(fontFamily = AppFont.poppins),
+
+    labelLarge = defaultTypography.labelLarge.copy(fontFamily = AppFont.poppins),
+    labelMedium = defaultTypography.labelMedium.copy(fontFamily = AppFont.poppins),
+    labelSmall = defaultTypography.labelSmall.copy(fontFamily = AppFont.poppins)
 )
