@@ -69,6 +69,9 @@ dependencies {
     // TF Lite
     implementation(libs.tensorflow.lite.task.audio)
 
+    // Datastore
+    implementation(libs.androidx.datastore.preferences)
+
     // Coil
     implementation(libs.coil.compose)
 
