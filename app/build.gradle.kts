@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.devtools.ksp)
 }
 
@@ -82,13 +81,15 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 
-    // Dagger Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
-    ksp(libs.androidx.hilt.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
+    // Koin
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.navigation)
+    implementation(libs.koin.androidx.compose)
 
     // Room Database
     implementation(libs.bundles.room)
     ksp(libs.room.compiler)
+
+    // Timber
+    implementation(libs.timber)
 }
