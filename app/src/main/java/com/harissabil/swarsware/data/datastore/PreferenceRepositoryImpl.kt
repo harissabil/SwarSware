@@ -11,11 +11,14 @@ import com.harissabil.swarsware.common.constant.Constant.USER_SETTINGS
 import com.harissabil.swarsware.domain.repository.PreferenceRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class PreferenceRepositoryImpl @Inject constructor(
+class PreferenceRepositoryImpl(
     private val context: Context,
 ) : PreferenceRepository {
+    private val readOnlyProperty = preferencesDataStore(name = USER_SETTINGS)
+
+    val Context.dataStore: DataStore<Preferences> by readOnlyProperty
+
     override suspend fun saveAppEntry() {
         context.dataStore.edit { settings ->
             settings[PreferenceKeys.APP_ENTRY] = true
@@ -33,12 +36,8 @@ class PreferenceRepositoryImpl @Inject constructor(
             settings[PreferenceKeys.APP_ENTRY] = false
         }
     }
-}
 
-private val readOnlyProperty = preferencesDataStore(name = USER_SETTINGS)
-
-val Context.dataStore: DataStore<Preferences> by readOnlyProperty
-
-private object PreferenceKeys {
-    val APP_ENTRY = booleanPreferencesKey(Constant.APP_ENTRY)
+    private object PreferenceKeys {
+        val APP_ENTRY = booleanPreferencesKey(Constant.APP_ENTRY)
+    }
 }
