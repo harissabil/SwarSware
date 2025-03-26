@@ -62,6 +62,9 @@ dependencies {
     // Icon Extended
     implementation(libs.androidx.material.icons.extended)
 
+    // Constraint Layout
+    implementation(libs.androidx.constraintlayout.compose)
+
     // DateTime
     implementation(libs.kotlinx.datetime)
 
