@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.harissabil.swarsware.ui.screen.home.component.HomeTopBar
-import com.harissabil.swarsware.ui.screen.home.component.HomeViewModel
+import com.harissabil.swarsware.ui.screen.home.HomeViewModel
 import com.harissabil.swarsware.ui.screen.home.component.Timer
 import com.harissabil.swarsware.ui.service.SoundDetectionService
 import com.harissabil.swarsware.ui.service.SoundDetectionService.Action
