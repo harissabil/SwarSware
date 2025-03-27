@@ -1,7 +1,7 @@
 package com.harissabil.swarsware.di
 
 import com.harissabil.swarsware.MainViewModel
-import com.harissabil.swarsware.ui.screen.home.component.HomeViewModel
+import com.harissabil.swarsware.ui.screen.home.HomeViewModel
 import com.harissabil.swarsware.ui.screen.onboarding.OnboardingViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module

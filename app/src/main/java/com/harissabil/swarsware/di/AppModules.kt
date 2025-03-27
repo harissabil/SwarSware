@@ -8,7 +8,8 @@ object AppModules {
         includes(
             listOf(
                 dataStoreModule,
-                viewModelModule
+                viewModelModule,
+                databaseModule
             )
         )
     }
