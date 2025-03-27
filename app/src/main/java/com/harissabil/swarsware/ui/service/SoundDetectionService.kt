@@ -102,7 +102,7 @@ class SoundDetectionService : Service() {
             classifier.close()
 
             timeElapsed = 0
-            Timber.tag("PlaytimeTracker").d("Stopwatch Stopped")
+            Timber.d("Stopwatch Stopped")
             updateTimer.cancel()
             updateTimer.purge()
             detectionTimer.cancel()
