@@ -2,4 +2,5 @@
 <resources>
     <color name="primary">#FF9CD49F</color>
     <color name="background">#FF10150F</color>
+    <color name="secondary_container">#FF305033</color>
 </resources>

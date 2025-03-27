@@ -10,4 +10,5 @@
 
     <color name="primary">#FF36693E</color>
     <color name="background">#FFF6FBF1</color>
+    <color name="secondary_container">#FFC4EAC2</color>
 </resources>

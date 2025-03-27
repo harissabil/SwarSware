@@ -14,15 +14,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -37,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.harissabil.swarsware.common.component.AutoSizeText
@@ -52,12 +50,16 @@ fun Timer(
     status: Status,
     onStart: () -> Unit,
     onStop: () -> Unit,
-    onPaused: () -> Unit,
-    onResumed: () -> Unit,
 ) {
     val hours = remember(timeElapsed) { timeElapsed.div(60).div(60) }
     val minutes = remember(timeElapsed) { (timeElapsed.div(60)).rem(60) }
     val seconds = remember(timeElapsed) { timeElapsed.rem(60) }
+
+    // Remember the max possible width of the text to ensure consistency
+    val maxPossibleText = remember { "00:00:00" }
+
+    // Remember a mutable state for the font size
+    var calculatedFontSize by remember { mutableStateOf(TextUnit.Unspecified) }
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -88,21 +90,41 @@ fun Timer(
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center
                 )
-                AutoSizeText(
-                    modifier = Modifier.constrainAs(timer) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
-                    text = "${"%02d".format(hours)}:${"%02d".format(minutes)}:${
-                        "%02d".format(
-                            seconds
-                        )
-                    }",
-                    maxLines = 1,
-                    style = MaterialTheme.typography.displayLarge
-                )
+
+                // First, use AutoSizeText with the maxPossibleText to calculate font size
+                // This is only used when calculatedFontSize is not specified yet
+                if (calculatedFontSize == TextUnit.Unspecified) {
+                    AutoSizeText(
+                        modifier = Modifier.constrainAs(timer) {
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
+                        text = maxPossibleText,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.displayLarge,
+                        onTextLayout = { result ->
+                            // Store the calculated font size
+                            if (calculatedFontSize == TextUnit.Unspecified) {
+                                calculatedFontSize = result.layoutInput.style.fontSize
+                            }
+                        }
+                    )
+                } else {
+                    // Use regular Text with the already calculated font size
+                    Text(
+                        modifier = Modifier.constrainAs(timer) {
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
+                        text = "${"%02d".format(hours)}:${"%02d".format(minutes)}:${"%02d".format(seconds)}",
+                        style = MaterialTheme.typography.displayLarge.copy(fontSize = calculatedFontSize),
+                        maxLines = 1
+                    )
+                }
             }
         }
 
@@ -133,27 +155,8 @@ fun Timer(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        FilledTonalButton(onClick = onStop) {
+                        OutlinedButton(onClick = onStop) {
                             Text(text = " Stop ")
-                        }
-                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.large))
-                        OutlinedButton(onClick = onPaused) {
-                            Text(text = "Pause")
-                        }
-                    }
-                }
-
-                Status.PAUSED -> {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        FilledTonalButton(onClick = onStop) {
-                            Text(text = "  Stop  ")
-                        }
-                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.large))
-                        OutlinedButton(onClick = onResumed) {
-                            Text(text = "Resume")
                         }
                     }
                 }
@@ -184,12 +187,6 @@ private fun TimerPreview() {
                     onStop = {
                         status = Status.IDLE
                     },
-                    onPaused = {
-                        status = Status.PAUSED
-                    },
-                    onResumed = {
-                        status = Status.PLAYING
-                    }
                 )
             }
         }
