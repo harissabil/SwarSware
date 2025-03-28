@@ -34,7 +34,7 @@ class PrepopulateRoomCallback(private val context: Context) : RoomDatabase.Callb
         val id: Long,
         val name: String,
         val description: String,
-        val priority: Priority? = null,
+        val priority: String? = null,
     )
 
     private suspend fun prepopulateSounds() {
@@ -48,7 +48,9 @@ class PrepopulateRoomCallback(private val context: Context) : RoomDatabase.Callb
                     id = sound.id + 1,
                     name = sound.name,
                     description = sound.description,
-                    priority = sound.priority
+                    priority = sound.priority?.let { priorityString ->
+                        Priority.entries.find { it.displayName == priorityString }
+                    }
                 )
             }
 
