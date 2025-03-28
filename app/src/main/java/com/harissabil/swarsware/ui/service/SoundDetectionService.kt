@@ -16,17 +16,23 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.harissabil.swarsware.MainActivity
 import com.harissabil.swarsware.R
+import com.harissabil.swarsware.domain.model.History
+import com.harissabil.swarsware.domain.repository.HistoryRepository
+import com.harissabil.swarsware.domain.repository.SoundRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock.System
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.tensorflow.lite.support.audio.TensorAudio
 import org.tensorflow.lite.task.audio.classifier.AudioClassifier
 import timber.log.Timber
 import java.util.Timer
 import java.util.TimerTask
 
-class SoundDetectionService : Service() {
+class SoundDetectionService : Service(), KoinComponent {
 
     // Coroutine setup
     private val serviceJob = Job()
@@ -48,6 +54,10 @@ class SoundDetectionService : Service() {
     private var probabilityThreshold: Float = 0.3f
     private lateinit var classifier: AudioClassifier
     private lateinit var tensor: TensorAudio
+
+    // Repository
+    private val soundRepository: SoundRepository by inject()
+    private val historyRepository: HistoryRepository by inject()
 
     override fun onBind(intent: Intent): IBinder? {
         Timber.d("onBind")
@@ -246,9 +256,26 @@ class SoundDetectionService : Service() {
                     filteredModelOutput.sortedBy { -it.score }
                         .joinToString(separator = "\n") { "${it.label} -> ${it.score} " }
 
-                // Logging the results
+                // Log the results
                 if (outputStr.isNotEmpty()) {
                     Timber.d("Output: $outputStr")
+                }
+
+                // Save the results to the database
+                serviceScope.launch {
+                    filteredModelOutput.forEach { category ->
+                        if (category.label != "Silence") {
+                            val sound = soundRepository.getSoundByName(category.label)
+                            if (sound != null) {
+                                val history = History(
+                                    id = 0,
+                                    sound = sound,
+                                    timestamp = System.now()
+                                )
+                                historyRepository.insertHistory(history)
+                            }
+                        }
+                    }
                 }
             }
         }
