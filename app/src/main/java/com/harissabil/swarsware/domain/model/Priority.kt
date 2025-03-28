@@ -1,6 +1,6 @@
 package com.harissabil.swarsware.domain.model
 
-enum class Priority(private val displayName: String) {
+enum class Priority(val displayName: String) {
     HIGH("High"),
     MEDIUM("Medium"),
     LOW("Low");
