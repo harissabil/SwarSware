@@ -10,13 +10,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.harissabil.swarsware.common.constant.Status
 import com.harissabil.swarsware.domain.model.History
 import com.harissabil.swarsware.domain.repository.HistoryRepository
 import com.harissabil.swarsware.ui.service.SoundDetectionService
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
@@ -28,14 +28,11 @@ class HomeViewModel(
     private val _timeElapsed = mutableLongStateOf(0L)
     val timeElapsed: State<Long> = _timeElapsed
 
-    private val _histories = MutableStateFlow<List<History>>(emptyList())
-    val histories: StateFlow<List<History>> = _histories.asStateFlow()
+    val pagedHistories: Flow<PagingData<History>> =
+        historyRepository.getPaginatedHistories()
+            .cachedIn(viewModelScope)
 
     private var receiver: BroadcastReceiver? = null
-
-    init {
-        getHistories()
-    }
 
     fun registerReceiver(context: Context) {
         if (receiver != null) return
@@ -91,14 +88,6 @@ class HomeViewModel(
         receiver?.let {
             context.unregisterReceiver(it)
             receiver = null
-        }
-    }
-
-    private fun getHistories() {
-        viewModelScope.launch {
-            historyRepository.getAllHistories().collect {
-                _histories.value = it
-            }
         }
     }
 

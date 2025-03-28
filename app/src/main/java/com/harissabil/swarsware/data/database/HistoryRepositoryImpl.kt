@@ -1,5 +1,9 @@
 package com.harissabil.swarsware.data.database
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.harissabil.swarsware.data.database.dao.HistoryDao
 import com.harissabil.swarsware.data.database.mapper.toEntity
 import com.harissabil.swarsware.data.database.mapper.toHistory
@@ -19,9 +23,16 @@ class HistoryRepositoryImpl(
         historyDao.deleteHistory(history.toEntity())
     }
 
-    override fun getAllHistories(): Flow<List<History>> {
-        return historyDao.getAllHistoriesWithSound().map { relations ->
-            relations.map { it.toHistory() }
+    override fun getPaginatedHistories(pageSize: Int): Flow<PagingData<History>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = pageSize,
+                enablePlaceholders = false,
+                maxSize = pageSize * 3
+            ),
+            pagingSourceFactory = { historyDao.getPaginatedHistoriesWithSound() }
+        ).flow.map { pagingData ->
+            pagingData.map { it.toHistory() }
         }
     }
 }
