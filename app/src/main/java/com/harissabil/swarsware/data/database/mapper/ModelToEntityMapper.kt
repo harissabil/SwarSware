@@ -19,7 +19,7 @@ internal fun Sound.toEntity(): SoundEntity {
 internal fun History.toEntity(): HistoryEntity {
     return HistoryEntity(
         id = id,
-        soundId = this.sound.id,
+        soundId = sound.id,
         timestamp = timestamp
     )
 }
@@ -29,6 +29,6 @@ internal fun Emergency.toEntity(): EmergencyEntity {
         id = id,
         name = name,
         phoneNumber = phoneNumber,
-        soundId = this.sound.id
+        soundId = sound.id
     )
 }

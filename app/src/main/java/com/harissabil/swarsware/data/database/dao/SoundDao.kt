@@ -14,4 +14,7 @@ interface SoundDao {
 
     @Query("SELECT * FROM SoundEntity")
     fun getAllSounds(): Flow<List<SoundEntity>>
+
+    @Query("SELECT * FROM SoundEntity WHERE name = :name")
+    suspend fun getSoundByName(name: String): SoundEntity?
 }

@@ -20,4 +20,8 @@ class SoundRepositoryImpl(
             entities.map { it.toModel() }
         }
     }
+
+    override suspend fun getSoundByName(name: String): Sound? {
+        return soundDao.getSoundByName(name)?.toModel()
+    }
 }
