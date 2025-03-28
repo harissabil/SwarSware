@@ -19,6 +19,6 @@ interface HistoryDao {
     suspend fun deleteHistory(history: HistoryEntity)
 
     @Transaction
-    @Query("SELECT * FROM HistoryEntity")
+    @Query("SELECT * FROM HistoryEntity ORDER BY id DESC")
     fun getAllHistoriesWithSound(): Flow<List<HistoryWithSound>>
 }

@@ -9,17 +9,33 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.harissabil.swarsware.common.constant.Status
+import com.harissabil.swarsware.domain.model.History
+import com.harissabil.swarsware.domain.repository.HistoryRepository
 import com.harissabil.swarsware.ui.service.SoundDetectionService
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(
+    private val historyRepository: HistoryRepository,
+) : ViewModel() {
     private val _status = mutableStateOf(Status.IDLE)
     val status: State<Status> = _status
 
     private val _timeElapsed = mutableLongStateOf(0L)
     val timeElapsed: State<Long> = _timeElapsed
 
+    private val _histories = MutableStateFlow<List<History>>(emptyList())
+    val histories: StateFlow<List<History>> = _histories.asStateFlow()
+
     private var receiver: BroadcastReceiver? = null
+
+    init {
+        getHistories()
+    }
 
     fun registerReceiver(context: Context) {
         if (receiver != null) return
@@ -33,18 +49,23 @@ class HomeViewModel : ViewModel() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 when (intent?.action) {
                     SoundDetectionService.Companion.TIMER_TICK -> {
-                        val time = intent.getIntExtra(SoundDetectionService.Companion.TIME_ELAPSED, 0)
+                        val time =
+                            intent.getIntExtra(SoundDetectionService.Companion.TIME_ELAPSED, 0)
                         _timeElapsed.longValue = time.toLong()
                     }
 
                     SoundDetectionService.Action.STATUS.toString() -> {
                         val isRunning =
-                            intent.getBooleanExtra(SoundDetectionService.Companion.IS_TIMER_RUNNING, false)
+                            intent.getBooleanExtra(
+                                SoundDetectionService.Companion.IS_TIMER_RUNNING,
+                                false
+                            )
                         _status.value = if (isRunning) Status.PLAYING else Status.IDLE
                         if (!isRunning) {
                             _timeElapsed.longValue = 0L
                         } else {
-                            val time = intent.getIntExtra(SoundDetectionService.Companion.TIME_ELAPSED, 0)
+                            val time =
+                                intent.getIntExtra(SoundDetectionService.Companion.TIME_ELAPSED, 0)
                             _timeElapsed.longValue = time.toLong()
                         }
                     }
@@ -70,6 +91,20 @@ class HomeViewModel : ViewModel() {
         receiver?.let {
             context.unregisterReceiver(it)
             receiver = null
+        }
+    }
+
+    private fun getHistories() {
+        viewModelScope.launch {
+            historyRepository.getAllHistories().collect {
+                _histories.value = it
+            }
+        }
+    }
+
+    fun deleteHistory(history: History) {
+        viewModelScope.launch {
+            historyRepository.deleteHistory(history)
         }
     }
 

@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
@@ -22,8 +24,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.harissabil.swarsware.ui.screen.home.component.HistoryItem
 import com.harissabil.swarsware.ui.screen.home.component.HomeTopBar
-import com.harissabil.swarsware.ui.screen.home.HomeViewModel
 import com.harissabil.swarsware.ui.screen.home.component.Timer
 import com.harissabil.swarsware.ui.service.SoundDetectionService
 import com.harissabil.swarsware.ui.service.SoundDetectionService.Action
@@ -43,6 +46,7 @@ fun HomeScreen(
 
     val status by viewModel.status
     val timeElapsed by viewModel.timeElapsed
+    val histories by viewModel.histories.collectAsStateWithLifecycle()
 
     // Register/unregister broadcast receiver
     DisposableEffect(context) {
@@ -80,7 +84,7 @@ fun HomeScreen(
                 .padding(innerPadding),
             contentPadding = PaddingValues(MaterialTheme.spacing.medium),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
         ) {
             item {
                 Timer(
@@ -104,9 +108,18 @@ fun HomeScreen(
                     },
                 )
             }
-//            item {
-//                HorizontalDivider()
-//            }
+            if (histories.isNotEmpty()) {
+                item {
+                    HorizontalDivider()
+                }
+                items(items = histories, key = { it.id }) { history ->
+                    HistoryItem(
+                        modifier = Modifier.animateItem(),
+                        history = history,
+                        onDeleteClick = viewModel::deleteHistory
+                    )
+                }
+            }
         }
     }
 }
