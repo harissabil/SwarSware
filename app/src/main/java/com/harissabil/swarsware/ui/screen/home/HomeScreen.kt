@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -24,7 +23,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.harissabil.swarsware.ui.screen.home.component.HistoryItem
 import com.harissabil.swarsware.ui.screen.home.component.HomeTopBar
 import com.harissabil.swarsware.ui.screen.home.component.Timer
@@ -46,7 +46,7 @@ fun HomeScreen(
 
     val status by viewModel.status
     val timeElapsed by viewModel.timeElapsed
-    val histories by viewModel.histories.collectAsStateWithLifecycle()
+    val pagedHistories = viewModel.pagedHistories.collectAsLazyPagingItems()
 
     // Register/unregister broadcast receiver
     DisposableEffect(context) {
@@ -108,16 +108,23 @@ fun HomeScreen(
                     },
                 )
             }
-            if (histories.isNotEmpty()) {
+            if (pagedHistories.itemCount > 0) {
                 item {
                     HorizontalDivider()
                 }
-                items(items = histories, key = { it.id }) { history ->
-                    HistoryItem(
-                        modifier = Modifier.animateItem(),
-                        history = history,
-                        onDeleteClick = viewModel::deleteHistory
-                    )
+
+                items(
+                    count = pagedHistories.itemCount,
+                    key = pagedHistories.itemKey { it.id }
+                ) { index ->
+                    val history = pagedHistories[index]
+                    history?.let {
+                        HistoryItem(
+                            modifier = Modifier.animateItem(),
+                            history = it,
+                            onDeleteClick = viewModel::deleteHistory
+                        )
+                    }
                 }
             }
         }
