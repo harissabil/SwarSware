@@ -92,6 +92,11 @@ dependencies {
     // Room Database
     implementation(libs.bundles.room)
     ksp(libs.room.compiler)
+    implementation(libs.androidx.room.paging)
+
+    // Paging 3
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
 
     // Timber
     implementation(libs.timber)
