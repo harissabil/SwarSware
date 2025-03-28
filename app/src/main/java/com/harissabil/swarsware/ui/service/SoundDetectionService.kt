@@ -301,10 +301,25 @@ class SoundDetectionService : Service(), KoinComponent {
             )
         }
 
+        // Create a unique channel ID based on the sound priority
+        val channelId = when (sound.priority) {
+            Priority.HIGH -> HIGH_PRIORITY_CHANNEL_ID
+            Priority.MEDIUM -> MEDIUM_PRIORITY_CHANNEL_ID
+            Priority.LOW -> LOW_PRIORITY_CHANNEL_ID
+            null -> DEFAULT_CHANNEL_ID
+        }
+
+        val channelName = when (sound.priority) {
+            Priority.HIGH -> "High Priority Sounds"
+            Priority.MEDIUM -> "Medium Priority Sounds"
+            Priority.LOW -> "Low Priority Sounds"
+            null -> "Default Sounds"
+        }
+
         val notificationManagerCompat =
             this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val builder = NotificationCompat.Builder(this, SOUND_DETECTION_CHANNEL_ID)
+        val builder = NotificationCompat.Builder(this, channelId)
             .setContentIntent(resultPendingIntent)
             .setContentTitle(sound.name)
             .setContentText(
@@ -317,15 +332,8 @@ class SoundDetectionService : Service(), KoinComponent {
             .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setSound(alarmSound)
 
-        val importance = when (sound.priority) {
-            Priority.HIGH -> NotificationManager.IMPORTANCE_HIGH
-            Priority.MEDIUM -> NotificationManager.IMPORTANCE_DEFAULT
-            Priority.LOW -> NotificationManager.IMPORTANCE_LOW
-            null -> NotificationManager.IMPORTANCE_NONE
-        }
-
         val channel =
-            NotificationChannel(SOUND_DETECTION_CHANNEL_ID, "Sound Detection Result", importance)
+            NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
 
         channel.enableVibration(true)
         val vibrationPattern = when (sound.priority) {
@@ -336,7 +344,7 @@ class SoundDetectionService : Service(), KoinComponent {
         }
         channel.vibrationPattern = vibrationPattern
 
-        builder.setChannelId(TIMER_CHANNEL_ID)
+        builder.setChannelId(channelId)
         builder.setAutoCancel(true)
 
         notificationManagerCompat.createNotificationChannel(channel)
@@ -358,6 +366,11 @@ class SoundDetectionService : Service(), KoinComponent {
         const val TIME_ELAPSED = "time_elapsed"
         const val TIMER_TICK = "timer_tick"
         const val TIMER_CHANNEL_ID = "timer_channel"
-        const val SOUND_DETECTION_CHANNEL_ID = "sound_detection_channel"
+
+        // New channel IDs for each priority level
+        const val HIGH_PRIORITY_CHANNEL_ID = "high_priority_channel"
+        const val MEDIUM_PRIORITY_CHANNEL_ID = "medium_priority_channel"
+        const val LOW_PRIORITY_CHANNEL_ID = "low_priority_channel"
+        const val DEFAULT_CHANNEL_ID = "default_channel"
     }
 }
