@@ -4,6 +4,7 @@ import androidx.room.Room
 import com.harissabil.swarsware.data.database.EmergencyRepositoryImpl
 import com.harissabil.swarsware.data.database.HistoryRepositoryImpl
 import com.harissabil.swarsware.data.database.SoundRepositoryImpl
+import com.harissabil.swarsware.data.database.room.PrepopulateRoomCallback
 import com.harissabil.swarsware.data.database.room.SwarSwareDatabase
 import com.harissabil.swarsware.domain.repository.EmergencyRepository
 import com.harissabil.swarsware.domain.repository.HistoryRepository
@@ -17,7 +18,9 @@ val databaseModule = module {
             context = androidContext(),
             klass = SwarSwareDatabase::class.java,
             name = "swarsware_db"
-        ).build()
+        )
+            .addCallback(PrepopulateRoomCallback(androidContext()))
+            .build()
     }
 
     single { get<SwarSwareDatabase>().soundDao() }
