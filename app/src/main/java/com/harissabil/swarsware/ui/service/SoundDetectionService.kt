@@ -7,16 +7,21 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.app.TaskStackBuilder
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.media.AudioRecord
+import android.media.RingtoneManager
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.harissabil.swarsware.MainActivity
 import com.harissabil.swarsware.R
+import com.harissabil.swarsware.common.util.toHhMmSs
 import com.harissabil.swarsware.domain.model.History
+import com.harissabil.swarsware.domain.model.Priority
+import com.harissabil.swarsware.domain.model.Sound
 import com.harissabil.swarsware.domain.repository.HistoryRepository
 import com.harissabil.swarsware.domain.repository.SoundRepository
 import kotlinx.coroutines.CoroutineScope
@@ -24,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock.System
+import kotlinx.datetime.Instant
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.tensorflow.lite.support.audio.TensorAudio
@@ -170,7 +176,7 @@ class SoundDetectionService : Service(), KoinComponent {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
+        val notificationBuilder = NotificationCompat.Builder(this, TIMER_CHANNEL_ID)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentTitle("Listening your surrounding for")
             .setOngoing(true)
@@ -198,14 +204,14 @@ class SoundDetectionService : Service(), KoinComponent {
             )
 
         val notificationChannel = NotificationChannel(
-            CHANNEL_ID,
+            TIMER_CHANNEL_ID,
             "Timer Channel",
             NotificationManager.IMPORTANCE_HIGH
         )
         notificationChannel.setShowBadge(true)
         notificationChannel.enableVibration(false)
 
-        notificationBuilder.setChannelId(CHANNEL_ID)
+        notificationBuilder.setChannelId(TIMER_CHANNEL_ID)
         notificationManager.createNotificationChannel(notificationChannel)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -266,12 +272,14 @@ class SoundDetectionService : Service(), KoinComponent {
                     filteredModelOutput.forEach { category ->
                         if (category.label != "Silence") {
                             val sound = soundRepository.getSoundByName(category.label)
-                            if (sound != null) {
+                            if (sound != null && sound.priority != null) {
+                                val time = System.now()
                                 val history = History(
                                     id = 0,
                                     sound = sound,
-                                    timestamp = System.now()
+                                    timestamp = time
                                 )
+                                buildNotification(sound, time)
                                 historyRepository.insertHistory(history)
                             }
                         }
@@ -281,6 +289,62 @@ class SoundDetectionService : Service(), KoinComponent {
         }
 
         classifierTask.scheduleAtFixedRate(task, 0, 500)
+    }
+
+    private fun buildNotification(sound: Sound, time: Instant) {
+        val resultIntent = Intent(this, MainActivity::class.java)
+        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+            addNextIntentWithParentStack(resultIntent)
+            getPendingIntent(
+                0,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        }
+
+        val notificationManagerCompat =
+            this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val builder = NotificationCompat.Builder(this, SOUND_DETECTION_CHANNEL_ID)
+            .setContentIntent(resultPendingIntent)
+            .setContentTitle(sound.name)
+            .setContentText(
+                "Detected at ${time.toHhMmSs()}"
+            )
+            .setColorized(true)
+            .setColor(ContextCompat.getColor(this, R.color.secondary_container))
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setAutoCancel(false)
+            .setCategory(NotificationCompat.CATEGORY_STATUS)
+            .setSound(alarmSound)
+
+        val importance = when (sound.priority) {
+            Priority.HIGH -> NotificationManager.IMPORTANCE_HIGH
+            Priority.MEDIUM -> NotificationManager.IMPORTANCE_DEFAULT
+            Priority.LOW -> NotificationManager.IMPORTANCE_LOW
+            null -> NotificationManager.IMPORTANCE_NONE
+        }
+
+        val channel =
+            NotificationChannel(SOUND_DETECTION_CHANNEL_ID, "Sound Detection Result", importance)
+
+        channel.enableVibration(true)
+        val vibrationPattern = when (sound.priority) {
+            Priority.HIGH -> longArrayOf(0, 500, 200, 500, 200, 500) // Intense, quick pattern
+            Priority.MEDIUM -> longArrayOf(0, 400, 400, 400) // Medium intensity
+            Priority.LOW -> longArrayOf(0, 300, 700) // Gentle, single pulse
+            null -> longArrayOf(0) // No vibration
+        }
+        channel.vibrationPattern = vibrationPattern
+
+        builder.setChannelId(TIMER_CHANNEL_ID)
+        builder.setAutoCancel(true)
+
+        notificationManagerCompat.createNotificationChannel(channel)
+
+        val notification = builder.build()
+
+        val notificationId = (sound.id * 1000 + System.now().toEpochMilliseconds() % 1000).toInt()
+        notificationManagerCompat.notify(notificationId, notification)
     }
 
     enum class Action {
@@ -293,6 +357,7 @@ class SoundDetectionService : Service(), KoinComponent {
         const val IS_TIMER_RUNNING = "is_timer_running"
         const val TIME_ELAPSED = "time_elapsed"
         const val TIMER_TICK = "timer_tick"
-        const val CHANNEL_ID = "timer_channel"
+        const val TIMER_CHANNEL_ID = "timer_channel"
+        const val SOUND_DETECTION_CHANNEL_ID = "sound_detection_channel"
     }
 }
