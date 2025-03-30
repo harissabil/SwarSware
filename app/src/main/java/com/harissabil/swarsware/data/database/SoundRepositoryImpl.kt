@@ -3,6 +3,7 @@ package com.harissabil.swarsware.data.database
 import com.harissabil.swarsware.data.database.dao.SoundDao
 import com.harissabil.swarsware.data.database.mapper.toEntity
 import com.harissabil.swarsware.data.database.mapper.toModel
+import com.harissabil.swarsware.domain.model.Priority
 import com.harissabil.swarsware.domain.model.Sound
 import com.harissabil.swarsware.domain.repository.SoundRepository
 import kotlinx.coroutines.flow.Flow
@@ -23,5 +24,12 @@ class SoundRepositoryImpl(
 
     override suspend fun getSoundByName(name: String): Sound? {
         return soundDao.getSoundByName(name)?.toModel()
+    }
+
+    override suspend fun updateSoundPriority(
+        name: String,
+        priority: Priority,
+    ) {
+        soundDao.updateSoundPriority(name, priority)
     }
 }
