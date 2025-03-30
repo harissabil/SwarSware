@@ -2090,7 +2090,7 @@
     {
         "id": 348,
         "name": "Door",
-        "description": "**Door:** The sound of a door opening or closing.",
+        "description": "The sound of a door opening or closing.",
         "priority": "High"
     },
     {
