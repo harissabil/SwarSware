@@ -29,6 +29,7 @@ import com.harissabil.swarsware.common.component.BottomNavBar
 import com.harissabil.swarsware.common.component.BottomNavItem
 import com.harissabil.swarsware.ui.screen.home.HomeScreen
 import com.harissabil.swarsware.ui.screen.onboarding.OnboardingScreen
+import com.harissabil.swarsware.ui.screen.sounds.SoundsScreen
 
 @Composable
 fun NavGraph(
@@ -126,7 +127,9 @@ fun NavGraph(
                 HomeScreen()
             }
 
-            composable<Route.Sounds> { }
+            composable<Route.Sounds> {
+                SoundsScreen()
+            }
 
             composable<Route.Emergency> { }
         }
