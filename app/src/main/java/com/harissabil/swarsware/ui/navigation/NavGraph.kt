@@ -27,6 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import com.harissabil.swarsware.R
 import com.harissabil.swarsware.common.component.BottomNavBar
 import com.harissabil.swarsware.common.component.BottomNavItem
+import com.harissabil.swarsware.ui.screen.emergency.EmergencyScreen
 import com.harissabil.swarsware.ui.screen.home.HomeScreen
 import com.harissabil.swarsware.ui.screen.onboarding.OnboardingScreen
 import com.harissabil.swarsware.ui.screen.sounds.SoundsScreen
@@ -131,7 +132,9 @@ fun NavGraph(
                 SoundsScreen()
             }
 
-            composable<Route.Emergency> { }
+            composable<Route.Emergency> {
+                EmergencyScreen()
+            }
         }
     }
 }
