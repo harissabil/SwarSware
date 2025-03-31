@@ -25,6 +25,12 @@ class SoundsViewModel(
     private val _priorityFilter = MutableStateFlow<Priority?>(Priority.HIGH)
     val priorityFilter: StateFlow<Priority?> = _priorityFilter.asStateFlow()
 
+    private val _soundDetail = MutableStateFlow<Sound?>(null)
+    val soundDetail: StateFlow<Sound?> = _soundDetail.asStateFlow()
+
+    private val _soundDetailPriority = MutableStateFlow<Priority?>(null)
+    val soundDetailPriority: StateFlow<Priority?> = _soundDetailPriority.asStateFlow()
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val filteredSounds: Flow<List<Sound>> = combine(
         _sounds,
@@ -58,5 +64,19 @@ class SoundsViewModel(
 
     fun setPriorityFilter(priority: Priority?) {
         _priorityFilter.value = priority
+    }
+
+    fun setSoundDetail(sound: Sound?) {
+        _soundDetailPriority.value = sound?.priority
+        _soundDetail.value = sound
+    }
+
+    fun setSoundDetailPriority(priority: Priority?) = viewModelScope.launch {
+        if (soundDetail.value == null || priority == null) return@launch
+        soundRepository.updateSoundPriority(
+            name = soundDetail.value?.name!!,
+            priority = priority
+        )
+        _soundDetailPriority.value = priority
     }
 }

@@ -11,8 +11,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -20,6 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.harissabil.swarsware.common.component.CommonTopBar
 import com.harissabil.swarsware.common.component.LargeDropdownMenu
 import com.harissabil.swarsware.domain.model.Priority
+import com.harissabil.swarsware.ui.screen.sounds.component.SoundDetailBottomSheet
 import com.harissabil.swarsware.ui.screen.sounds.component.SoundItem
 import com.harissabil.swarsware.ui.screen.sounds.component.SoundSearchBar
 import com.harissabil.swarsware.ui.theme.spacing
@@ -37,6 +42,11 @@ fun SoundsScreen(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(
         canScroll = { false }
     )
+
+    val soundDetail by viewModel.soundDetail.collectAsStateWithLifecycle()
+    val soundDetailPriority by viewModel.soundDetailPriority.collectAsStateWithLifecycle()
+    val soundDetailBottomSheet = rememberModalBottomSheetState()
+    var showSoundDetail by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier
@@ -81,9 +91,25 @@ fun SoundsScreen(
                 SoundItem(
                     modifier = Modifier.animateItem(),
                     sound = sound,
-                    onClick = {}
+                    onClick = {
+                        showSoundDetail = true
+                        viewModel.setSoundDetail(sound)
+                    }
                 )
             }
         }
+    }
+
+    if (showSoundDetail && soundDetail != null) {
+        SoundDetailBottomSheet(
+            sheetState = soundDetailBottomSheet,
+            onDismissRequest = {
+                showSoundDetail = false
+                viewModel.setSoundDetail(null)
+            },
+            sound = soundDetail!!,
+            selectedPriority = soundDetailPriority,
+            onPrioritySelected = viewModel::setSoundDetailPriority
+        )
     }
 }
