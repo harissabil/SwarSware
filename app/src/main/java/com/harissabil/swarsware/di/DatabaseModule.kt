@@ -19,6 +19,7 @@ val databaseModule = module {
             klass = SwarSwareDatabase::class.java,
             name = "swarsware_db"
         )
+            .fallbackToDestructiveMigration()
             .addCallback(PrepopulateRoomCallback(androidContext()))
             .build()
     }
