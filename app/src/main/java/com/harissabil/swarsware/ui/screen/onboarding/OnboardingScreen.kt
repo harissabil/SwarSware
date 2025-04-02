@@ -77,12 +77,20 @@ fun OnboardingScreen(
         }
     }
 
+    val callPhonePermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            viewModel.onPermissionsGranted()
+        }
+    }
+
     // Notification permission request (for Android 13+)
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            viewModel.onPermissionsGranted()
+            callPhonePermissionLauncher.launch(Manifest.permission.CALL_PHONE)
         }
     }
 
