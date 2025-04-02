@@ -2,7 +2,8 @@
 
 SwarSware adalah aplikasi Android yang dirancang untuk membantu penyandang tunarungu mendeteksi suara lingkungan di sekitarnya dan mengubahnya menjadi getaran terstruktur secara real-time. Dengan memanfaatkan teknologi LiteRT (sebelumnya TensorFlow Lite) dan foreground service, SwarSware mampu mengidentifikasi berbagai suara darurat dan situasional, memberikan peringatan proaktif melalui pola getaran yang dapat disesuaikan, sehingga meningkatkan keamanan dan partisipasi sosial pengguna dalam kehidupan sehari-hari.
 
-Dikembangkan oleh Tim Seaside Vacation:
+## Tim Seaside Vacation
+
 - Muhammad Haris Sabil Al Karim
 - Bima Rizqy Ramadhan
 
