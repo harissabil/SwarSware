@@ -18,7 +18,7 @@ import com.harissabil.swarsware.data.database.entity.SoundEntity
         HistoryEntity::class,
         EmergencyEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(DateTimeConverter::class, PriorityConverter::class)

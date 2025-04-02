@@ -19,5 +19,6 @@ data class EmergencyEntity(
     val id: Long,
     val name: String,
     val phoneNumber: String,
-    val soundId: Long
+    val soundId: Long,
+    val photo: String
 )

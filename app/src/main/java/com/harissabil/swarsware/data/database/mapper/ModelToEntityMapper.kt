@@ -29,6 +29,7 @@ internal fun Emergency.toEntity(): EmergencyEntity {
         id = id,
         name = name,
         phoneNumber = phoneNumber,
-        soundId = sound.id
+        soundId = sound.id,
+        photo = photo
     )
 }

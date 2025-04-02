@@ -30,5 +30,6 @@ internal fun EmergencyWithSound.toEmergency(): Emergency {
         name = emergency.name,
         phoneNumber = emergency.phoneNumber,
         sound = sound.toModel(),
+        photo = emergency.photo
     )
 }
