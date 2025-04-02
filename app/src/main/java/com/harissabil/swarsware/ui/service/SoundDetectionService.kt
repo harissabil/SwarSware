@@ -18,15 +18,19 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.harissabil.swarsware.MainActivity
 import com.harissabil.swarsware.R
+import com.harissabil.swarsware.common.util.makePhoneCall
 import com.harissabil.swarsware.common.util.toHhMmSs
 import com.harissabil.swarsware.domain.model.History
 import com.harissabil.swarsware.domain.model.Priority
 import com.harissabil.swarsware.domain.model.Sound
+import com.harissabil.swarsware.domain.repository.EmergencyRepository
 import com.harissabil.swarsware.domain.repository.HistoryRepository
 import com.harissabil.swarsware.domain.repository.SoundRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock.System
 import kotlinx.datetime.Instant
@@ -64,6 +68,7 @@ class SoundDetectionService : Service(), KoinComponent {
     // Repository
     private val soundRepository: SoundRepository by inject()
     private val historyRepository: HistoryRepository by inject()
+    private val emergencyRepository: EmergencyRepository by inject()
 
     override fun onBind(intent: Intent): IBinder? {
         Timber.d("onBind")
@@ -281,6 +286,15 @@ class SoundDetectionService : Service(), KoinComponent {
                                 )
                                 buildNotification(sound, time)
                                 historyRepository.insertHistory(history)
+
+                                delay(500)
+
+                                // Check if the sound is an emergency sound
+                                val emergencies = emergencyRepository.getAllEmergencies().first()
+                                val emergency = emergencies.find { it.sound.id == sound.id }
+                                if (emergency != null) {
+                                    makePhoneCall(this@SoundDetectionService, emergency.phoneNumber)
+                                }
                             }
                         }
                     }
