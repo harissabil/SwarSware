@@ -1,6 +1,7 @@
 package com.harissabil.swarsware.di
 
 import com.harissabil.swarsware.MainViewModel
+import com.harissabil.swarsware.ui.screen.emergency.EmergencyViewModel
 import com.harissabil.swarsware.ui.screen.home.HomeViewModel
 import com.harissabil.swarsware.ui.screen.onboarding.OnboardingViewModel
 import com.harissabil.swarsware.ui.screen.sounds.SoundsViewModel
@@ -12,4 +13,5 @@ val viewModelModule = module {
     viewModelOf(::OnboardingViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::SoundsViewModel)
+    viewModelOf(::EmergencyViewModel)
 }
