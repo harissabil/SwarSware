@@ -45,7 +45,7 @@ fun SoundsScreen(
 
     val soundDetail by viewModel.soundDetail.collectAsStateWithLifecycle()
     val soundDetailPriority by viewModel.soundDetailPriority.collectAsStateWithLifecycle()
-    val soundDetailBottomSheet = rememberModalBottomSheetState()
+    val soundDetailBottomSheetState = rememberModalBottomSheetState()
     var showSoundDetail by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
@@ -102,7 +102,7 @@ fun SoundsScreen(
 
     if (showSoundDetail && soundDetail != null) {
         SoundDetailBottomSheet(
-            sheetState = soundDetailBottomSheet,
+            sheetState = soundDetailBottomSheetState,
             onDismissRequest = {
                 showSoundDetail = false
                 viewModel.setSoundDetail(null)
