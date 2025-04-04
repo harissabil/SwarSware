@@ -56,10 +56,10 @@ fun EmergencyScreen(
         canScroll = { false }
     )
 
-    val emergencyDetailBottomSheetState = rememberModalBottomSheetState()
+    val emergencyDetailBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showEmergencyDetail by rememberSaveable { mutableStateOf(false) }
 
-    val addEmergencyBottomSheetState = rememberModalBottomSheetState()
+    val addEmergencyBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showAddEmergency by rememberSaveable { mutableStateOf(false) }
 
     val photoPicker =
