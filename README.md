@@ -17,7 +17,7 @@ Aplikasi ini meningkatkan keamanan dan partisipasi sosial pengguna dalam kehidup
 
 ## Video Demo
 
-https://github.com/user-attachments/assets/1e32b05a-9e4c-4c93-a8ee-b627f76ae9bd
+https://github.com/user-attachments/assets/7842346f-2ca1-49c7-aa4a-5d7b3bea3b59
 
 ## Tangkapan Layar
 
