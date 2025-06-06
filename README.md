@@ -1,25 +1,20 @@
 # SwarSware
 
-SwarSware adalah aplikasi Android yang dirancang untuk membantu penyandang tunarungu mendeteksi suara lingkungan di sekitarnya dan mengubahnya menjadi getaran terstruktur secara real-time. Dengan memanfaatkan teknologi LiteRT (sebelumnya TensorFlow Lite) dan foreground service, SwarSware mampu mengidentifikasi berbagai suara darurat dan situasional, memberikan peringatan proaktif melalui pola getaran yang dapat disesuaikan.
+SwarSware is an Android application designed to assist individuals with hearing impairments by detecting environmental sounds and converting them into structured vibrations in real-time. By leveraging LiteRT (formerly TensorFlow Lite) and foreground service technology, SwarSware can identify various emergency and situational sounds, providing proactive alerts through customizable vibration patterns.
 
-Aplikasi ini meningkatkan keamanan dan partisipasi sosial pengguna dalam kehidupan sehari-hari, sekaligus menjadi alternatif terjangkau bagi mereka yang tidak mampu membeli Alat Bantu Dengar (ABD) atau sebagai pendamping untuk meningkatkan kesadaran lingkungan bagi pengguna ABD.
+This application enhances users’ safety and social participation in daily life, serving as an affordable alternative for those unable to purchase hearing aids (HAs), or as a complementary tool to increase environmental awareness for hearing aid users.
 
-## Tim Seaside Vacation
+## Table of Contents
+- [Demo Video](#demo-video)
+- [Screenshots](#screenshots)
+- [Key Features](#key-features)
+- [Installation](#installation)
 
-- Muhammad Haris Sabil Al Karim
-- Bima Rizqy Ramadhan
-
-## Daftar Isi
-- [Video Demo](#video-demo)
-- [Tangkapan Layar](#tangkapan-layar)
-- [Fitur Utama](#fitur-utama)
-- [Instalasi](#instalasi)
-
-## Video Demo
+## Demo Video
 
 https://github.com/user-attachments/assets/7842346f-2ca1-49c7-aa4a-5d7b3bea3b59
 
-## Tangkapan Layar
+## Screenshots
 
 <table>
   <tbody>
@@ -41,21 +36,21 @@ https://github.com/user-attachments/assets/7842346f-2ca1-49c7-aa4a-5d7b3bea3b59
   </tbody>
 </table>
 
-## Fitur Utama
+## Key Features
 
-1. Klasifikasi Suara On-Device — Menggunakan model YAMNet yang terintegrasi langsung dalam perangkat untuk mendeteksi dan mengklasifikasikan suara lingkungan secara real-time tanpa memerlukan koneksi internet.
-2. Personalisasi Prioritas — Pengguna dapat menyesuaikan tingkat prioritas dari berbagai jenis suara, memungkinkan pengguna mendapatkan pengalaman yang disesuaikan dengan kebutuhan sehari-hari mereka.
-3. Emergency Contact Alert — Membantu pengguna secara otomatis menghubungi kontak yang diinginkan ketika terjadi sesuatu sehingga meningkatkan keamanan pengguna dengan memastikan bantuan dapat segera dihubungi saat terdeteksi suara darurat.
+1. On-Device Sound Classification — Utilizes the YAMNet model integrated directly on the device to detect and classify environmental sounds in real-time, without requiring an internet connection.
+2. Priority Personalization — Users can adjust the priority level of different sound types, allowing for a customized experience tailored to their daily needs.
+3. Emergency Contact Alert — Helps users automatically contact their designated emergency contacts when critical sounds are detected, improving safety by ensuring timely assistance.
 
-## Instalasi
+## Installation
 
-Untuk meng-install SwarSware, ada dua opsi yang tersedia:
+There are two options to install SwarSware:
 
-### Opsi 1: Install dari Google Drive
+### Option 1: Install from Google Drive
 
-Kunjungi link [berikut](https://drive.google.com/drive/folders/1NPU7ex2d-w7uCAk9EY8o8pt8e_jyYhZq?usp=sharing).
+Visit this [link](https://drive.google.com/drive/folders/1NPU7ex2d-w7uCAk9EY8o8pt8e_jyYhZq?usp=sharing).
 
-### Opsi 2: Build dan jalankan dari source code
+### Option 2: Build and Run from Source Code
 
-1. Clone atau download proyek dan buka di Android Studio.
-2. Sinkronisasi proyek dengan Gradle dan jalankan aplikasi melalui Emulator atau Device langsung.
+1. Clone or download the project and open it in Android Studio.
+2. Sync the project with Gradle and run the app using an emulator or a physical device.
